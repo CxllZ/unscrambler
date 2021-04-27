@@ -1,58 +1,29 @@
-print("Please Be Patient While We Get Everything Ready!")
-def RemoveFromList(thelist, val):
-    return [value for value in thelist if value != val]
-
-def GetDic():
-    try:
-        dicopen = open("dictionary.txt", "r")
-        dicraw = dicopen.read()
-        dicopen.close()
-        diclist = dicraw.split("\n")
-        diclist = RemoveFromList(diclist, '')
-        return diclist
-    except FileNotFoundError:
-        print("No Dictionary!")
-        return 
-    
-def Word2Vect(word):
-    l = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
-    v = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    w = word.lower()
-    wl = list(w)
-    for i in range(0, len(wl)):
-        if wl[i] in l:
-            ind = l.index(wl[i])
-            v[ind] += 1
-    return v
-
-def Vect2Int(vect):
-    pv = 0
-    f = 0
-    for i in range(0, len(vect)):
-        wip = (vect[i]*(2**pv))
-        f += wip
-        pv += 4
-    return f
-    
-def Ints2Dic(dic):
-    d = {}
-    for i in range(0, len(dic)):
-        v = Word2Vect(dic[i])
-        Int = Vect2Int(v)
-        if Int in d:
-            tat = d.get(Int)
-            tat.append(dic[i])
-            d[Int] = tat
-        elif Int not in d:
-            d[Int] = [dic[i]]
-    return d
-        
-d = GetDic()
-ind = Ints2Dic(d)
-
+def charCount(word):
+    dict = {}
+    for i in word:
+        dict[i] = dict.get(i, 0) + 1
+    return dict
+  
+  
+def possible_words(lwords, charSet):
+    for word in lwords:
+        flag = 1
+        chars = charCount(word)
+        for key in chars:
+            if key not in charSet:
+                flag = 0
+            else:
+                if charSet.count(key) != chars[key]:
+                    flag = 0
+        if flag == 1:
+            print(word)
+  
 while True:
-    s = input("Enter Scrambbled Word Here -->: ")
-    v = Vect2Int(Word2Vect(s))
-    tp = ind.get(v, 'Word Not in Dictionary.')
-    print(tp)
-    print("Press CTRL + C to exit!")
+    with open('dictionary.txt', 'r') as f:
+        lines = f.read().splitlines()
+        charSet = input("Enter Scrambled Word Here -->: ")
+        print("-----------------------")
+        possible_words(lines, charSet)
+        print("-----------------------")
+        print("Press CTRL + C to exit!")
+        print("-----------------------")
